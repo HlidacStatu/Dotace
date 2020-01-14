@@ -70,7 +70,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HlidacStatu\Lib\Lib.csproj">
+    <ProjectReference Include="..\..\..\HlidacStatu\Lib\Lib.csproj">
       <Project>{40133098-338c-4a5b-bfaa-69a748d73a87}</Project>
       <Name>Lib</Name>
     </ProjectReference>
