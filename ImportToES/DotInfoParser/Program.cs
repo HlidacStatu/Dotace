@@ -51,7 +51,7 @@ namespace DotInfoParser
                                 continue;
                             }
 
-                            string dotaceId = GetTabValue(o2, "tab1", "Identifikátor dot. / Kód IS"); // o2["data"]["tab1"]["data"].Where(jt => (string)jt["name"] == "Identifikátor dot. / Kód IS").Select(jt => (string)jt["value"]).FirstOrDefault();
+                            string dotaceId = $"DotInfo-{GetTabValue(o2, "tab1", "Identifikátor dot. / Kód IS")}"; // o2["data"]["tab1"]["data"].Where(jt => (string)jt["name"] == "Identifikátor dot. / Kód IS").Select(jt => (string)jt["value"]).FirstOrDefault();
                             Dotace dotace = ds.Get(dotaceId);
                             Rozhodnuti rozhodnuti = new Rozhodnuti()
                             {
@@ -86,7 +86,7 @@ namespace DotInfoParser
                             {
                                 dotace = new Dotace()
                                 {
-                                    IdDotace = $"DotInfo-{dotaceId}",
+                                    IdDotace = dotaceId,
                                     DatumPodpisu = HlidacStatu.Lib.Validators.DateInText(
                                         RemoveWhiteSpaces(GetTabValue(o2, "tab1", "Datum vydání rozhodnutí"))),
                                     
