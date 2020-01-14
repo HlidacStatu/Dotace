@@ -1,0 +1,3 @@
+[submodule "HlidacStatu"]
+	path = HlidacStatu
+	url = git@github.com:HlidacStatu/HlidacStatu.git
