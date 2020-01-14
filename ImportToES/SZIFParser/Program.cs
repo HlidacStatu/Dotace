@@ -32,7 +32,7 @@ namespace SZIFParser
                     {
                         try
                         {
-
+                            Console.WriteLine(counter++);
                             SZIFobj dot = serializer.Deserialize<SZIFobj>(reader);
 
                             

@@ -5,7 +5,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6A7A8EE3-3A66-417A-8945-5A296F1E1753}</ProjectGuid>
+    <ProjectGuid>{ED5F578F-9CA6-4BB5-A5B4-95D61B349F09}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>SZIFParser</RootNamespace>
     <AssemblyName>SZIFParser</AssemblyName>
@@ -37,7 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Devmasters.Core">
-      <HintPath>..\..\HlidacStatu\packages\Devmasters.Core.1.472.4\lib\net40\Devmasters.Core.dll</HintPath>
+      <HintPath>..\..\..\HlidacStatu\packages\Devmasters.Core.1.472.4\lib\net40\Devmasters.Core.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -54,8 +54,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DotacniProgram.cs" />
+    <Compile Include="Prijemce.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rozhodnuti.cs" />
+    <Compile Include="SZIFobj.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
