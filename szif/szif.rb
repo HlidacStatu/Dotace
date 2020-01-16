@@ -232,9 +232,9 @@ def non_zero?(value)
 end
 
 def parse_finances(year, row, parsed_individual, finances, slug)
-  donation_id = "SZIF-#{year}#{slug.present? ? "-#{slug}" : ''}-#{row[:szif_id]}"
+  (finances || []).map.with_index(1) do |finance_row, donation_idx|
+    donation_id = "SZIF-#{year}#{slug.present? ? "-#{slug}" : ''}-#{row[:szif_id]}-#{donation_idx}"
 
-  (finances || []).map do |finance_row|
     cz_value = parse_number(finance_row[:resources_cz])
     eu_value = parse_number(finance_row[:resources_eu])
     total_value = parse_number(finance_row[:resources_total])
