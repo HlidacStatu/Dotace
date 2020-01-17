@@ -39,7 +39,8 @@ namespace CedrParser
                     Console.WriteLine(lineNbr++);
                     try
                     {
-                        Dotace dotace = ds.Get(csv.GetField("idDotace"));
+                        string dotaceid = $"CEDR-{csv.GetField("idDotace")}";
+                        Dotace dotace = ds.Get(dotaceid);
 
                         Rozhodnuti rozhodnuti = new Rozhodnuti();
                         if (!csv.GetField<bool>("rozhodnutiRefundaceIndikator")) //refundace není dotace
@@ -76,7 +77,7 @@ namespace CedrParser
                         {
                             dotace = new Dotace()
                             {
-                                IdDotace = $"CEDR-{csv.GetField("idDotace")}",
+                                IdDotace = dotaceid,
                                 DatumPodpisu = csv.GetField<DateTime?>("dotacePodpisDatum"),
                                 Rozhodnuti = new List<Rozhodnuti>() { rozhodnuti },
                                 DotacniProgram = program,
