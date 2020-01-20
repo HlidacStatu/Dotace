@@ -117,4 +117,4 @@ def main(force: false)
   transform_to_hlidac(force: force)
 end
 
-main(force: true)
+main
