@@ -109,7 +109,7 @@ def transform_to_hlidac(force: false)
   return if !force && File.exist?(out_filename)
 
   parsed_rows = parse_rows
-  File.open(out_filename, 'w') { |f| f.write(Oj.dump(parsed_rows), mode: :compat) }
+  File.open(out_filename, 'w') { |f| f.write(Oj.dump(parsed_rows, mode: :compat)) }
 end
 
 def main(force: false)
