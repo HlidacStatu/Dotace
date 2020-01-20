@@ -40,6 +40,8 @@ namespace CedrParser
                     try
                     {
                         string dotaceid = $"CEDR-{csv.GetField("idDotace")}";
+                        dotaceid = Devmasters.Core.TextUtil.NormalizeToURL(dotaceid); // musíme normalizovat
+
                         Dotace dotace = ds.Get(dotaceid);
 
                         Rozhodnuti rozhodnuti = new Rozhodnuti();

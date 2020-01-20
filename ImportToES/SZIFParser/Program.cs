@@ -35,8 +35,9 @@ namespace SZIFParser
                             Console.WriteLine(counter++);
                             SZIFobj dot = serializer.Deserialize<SZIFobj>(reader);
 
-                            
-                            Dotace dotace = ds.Get(dot.IdDotace);
+                            string dotaceId = Devmasters.Core.TextUtil.NormalizeToURL(dot.IdDotace);
+
+                            Dotace dotace = ds.Get(dotaceId);
 
                             var listRozhodnuti = new List<HlidacStatu.Lib.Data.Dotace.Rozhodnuti>();
 
@@ -59,7 +60,7 @@ namespace SZIFParser
                             {
                                 dotace = new Dotace()
                                 {
-                                    IdDotace = dot.IdDotace,
+                                    IdDotace = dotaceId,
                                     DatumPodpisu = dot.PodpisDatum,
 
                                     IdProjektu = dot.IdProjektu,

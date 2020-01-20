@@ -52,6 +52,8 @@ namespace DotInfoParser
                             }
 
                             string dotaceId = $"DotInfo-{GetTabValue(o2, "tab1", "Identifikátor dot. / Kód IS")}"; // o2["data"]["tab1"]["data"].Where(jt => (string)jt["name"] == "Identifikátor dot. / Kód IS").Select(jt => (string)jt["value"]).FirstOrDefault();
+                            dotaceId = Devmasters.Core.TextUtil.NormalizeToURL(dotaceId); //musíme to normalizovat
+
                             Dotace dotace = ds.Get(dotaceId);
                             Rozhodnuti rozhodnuti = new Rozhodnuti()
                             {
@@ -90,7 +92,7 @@ namespace DotInfoParser
                                     DatumPodpisu = HlidacStatu.Lib.Validators.DateInText(
                                         RemoveWhiteSpaces(GetTabValue(o2, "tab1", "Datum vydání rozhodnutí"))),
                                     
-                                    IdProjektu = dotaceId,
+                                    IdProjektu = GetTabValue(o2, "tab1", "Identifikátor dot. / Kód IS"),
                                     NazevProjektu = GetTabValue(o2, "tab1", "Název dotace"),
                                     
                                     DotacniProgram = program,
