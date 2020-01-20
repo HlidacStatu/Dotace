@@ -25,6 +25,8 @@ def parse_date(day, month, year)
 end
 
 def transform_row(donation_id, row)
+  return nil if row[:cancel].present?
+
   donation_date = parse_date(row[:decision_day], row[:decision_month], row[:decision_year])
   donation_size = row[:czk_investment] * 1_000_000.0
   ceil = row[:public_support_ceil].to_i
@@ -44,7 +46,6 @@ def transform_row(donation_id, row)
     pujckaCelkem: 0,
     verejnaPodpora: row[:public_support],
     stropVerejnePodpory: ceil,
-    zadostZrusena: row[:cancel].present?,
     rozhodnuti: [{
       datum: donation_date,
       castkaPozadovana: donation_size,
@@ -97,7 +98,7 @@ def parse_rows
     donation_id = generate_donation_id(company_name, donation_counts[company_name])
 
     transform_row(donation_id, parsed_row)
-  end
+  end.compact
 end
 
 def out_filename
@@ -116,4 +117,4 @@ def main(force: false)
   transform_to_hlidac(force: force)
 end
 
-main
+main(force: true)
