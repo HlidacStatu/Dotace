@@ -16,7 +16,15 @@ namespace SZIFParser
         static void Main(string[] args)
         {
             XmlConfigurator.Configure();
-            string path = @"d:\Hlidac\dotace\szif\hlidac.json";
+
+            // szif
+            //string path = @"d:\Hlidac\dotace\szif\hlidac.json";  
+            
+            // czech invest
+            string path = @"d:\Hlidac\dotace\czechinvest\czechinvest.json";
+            
+            
+            
             JsonSerializer serializer = new JsonSerializer();
 
 
