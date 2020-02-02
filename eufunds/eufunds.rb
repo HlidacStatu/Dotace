@@ -30,14 +30,6 @@ def file_for_hlidac
   "#{DATA_DIR}/hlidac.json"
 end
 
-def file_for_hlidac_old
-  "#{DATA_DIR}/hlidac_2007_2013.json"
-end
-
-def file_for_hlidac_new
-  "#{DATA_DIR}/hlidac_2014_present.json"
-end
-
 def clean_donation_id(donation_id)
   donation_id.tr('/.', '-')
 end
