@@ -5,8 +5,8 @@ namespace SZIFParser
     public class Rozhodnuti
     {
         public string Id { get; set; }
-        public float CastkaPozadovana { get; set; }
-        public float CastkaRozhodnuta { get; set; }
+        public decimal CastkaPozadovana { get; set; }
+        public decimal CastkaRozhodnuta { get; set; }
         public bool JePujcka { get; set; }
         public string PoskytovatelIco { get; set; }
         public string PoskytovatelNazev { get; set; }
