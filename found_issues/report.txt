@@ -1,0 +1,8 @@
+Z cedr bylo nacteno 2002391 polozek.
+Z eufondy bylo nacteno 129481 polozek.
+Z dotinfo bylo nacteno 145426 polozek.
+Z szif bylo nacteno 657891 polozek. Tyto zaznamy jsou unikatni (neexistuje o nich informace v CEDRu).
+Z czechinvest bylo nacteno 1029 polozek. Tyto zaznamy jsou unikatni (neexistuje o nich informace v CEDRu).
+Po spojeni zdroju mame celkem 2936218 polozek.
+Celkem nalezeno 294402 potencionalnich duplicit.
+Nepodarilo se nalezt v cedru 113330 polozek, ktere by tam mwli byt.
