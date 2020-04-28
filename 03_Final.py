@@ -99,28 +99,10 @@ report.append(f"Z szif bylo nacteno {len(szif.index)} polozek. Tyto zaznamy jsou
 report.append(f"Z czechinvest bylo nacteno {len(czi.index)} polozek. Tyto zaznamy jsou unikatni (neexistuje o nich informace v CEDRu).")
 # merge
 logger.info('spojuji zdroje')
-merged = pd.concat([cedr,eufondy,dotinfo])
+merged = pd.concat([cedr,eufondy,dotinfo,szif,czi])
 # set index
 merged = merged.set_index("iddotace", drop=False)
 
-# nastav info o zdroji
-logger.info('Hledam podobne dotace podle kodu projektu')
-seznamZdroju = merged.groupby("kodprojektu").apply(lambda x: [ dict(nazev=z,url=u) for z,u in zip(x["zdroj"], x["url"])] )
-merged["zdroje"] = merged.apply(lambda x: [dict(dct, isPrimary=True) if dct["nazev"] == x["zdroj"] else dct for dct in seznamZdroju[x["kodprojektu"]] ] ,axis=1 )
-
-#nezapomenout zmergovat ještě SZIF a Czechinvest
-logger.info('pridavam SZIF')
-szif = szif.set_index("iddotace", drop=False)
-szif["zdroje"] = szif.apply(lambda x: [dict(nazev=x["zdroj"], url=x["url"], isPrimary=True )] ,axis=1)
-merged = pd.concat([merged,szif])
-
-logger.info('pridavam Czechinvest')
-czi = czi.set_index("iddotace", drop=False)
-czi["zdroje"] = czi.apply(lambda x: [dict(nazev=x["zdroj"], url=x["url"], isPrimary=True )] ,axis=1)
-merged = pd.concat([merged,czi])
-
-# vynulovat nány 
-merged = merged.where(pd.notnull(merged), None)
 report.append(f"Po spojeni zdroju mame celkem {len(merged.index)} polozek.")
 
 # načíst json zpět do dict (aby to neescapovalo vnořený json)
@@ -129,6 +111,27 @@ merged["rozhodnuti"] = merged["rozhodnuti"].apply(lambda x: json.loads(x) )
 merged["prijemce"] = merged["prijemce"].apply(lambda x: json.loads(x) )
 merged["program"] = merged["program"].apply(lambda x: json.loads(x) )
 merged["chyba"] = merged["chyba"].apply(lambda x: json.loads(x) )
+
+logger.info('rozbaluji ico pro pomoc s nalezenim duplicit')
+merged["ico"] = merged["prijemce"].apply(lambda x: x["ico"] )
+# nastav info o zdroji
+logger.info('Hledam podobne dotace podle kodu projektu a ica')
+#seznamZdroju = merged.groupby("kodprojektu").apply(lambda x: [ dict(nazev=z,url=u) for z,u in zip(x["zdroj"], x["url"])] )
+#merged["zdroje"] = merged.apply(lambda x: [dict(dct, isPrimary=True) if dct["nazev"] == x["zdroj"] else dct for dct in seznamZdroju[x["kodprojektu"]] ] ,axis=1 )
+# oznacit potencionalni duplicity
+# jako duplicity jsou ty, které MAJÍ vyplněné (kodprojektu A ico) a tyto položky jsou zároveň duplicitní
+origs = merged[merged.duplicated(["kodprojektu","ico"], keep="last")].dropna(subset=["ico","kodprojektu"])
+origs = origs.drop_duplicates(["kodprojektu","ico"])
+origs = origs.rename(columns={'iddotace':'duplicita'})
+merged = merged.merge(origs[["duplicita","kodprojektu","ico"]], on=["ico","kodprojektu"], how="left")
+merged["duplicita"] = merged.apply(lambda x: None if x["iddotace"] == x["duplicita"] else x["duplicita"] , axis=1 )
+report.append(f"Po označení duplicit mame celkem {len(merged.index)} polozek - tato hodnota by měla bzt stejná jako hodnota předchozí.")
+
+merged = merged.set_index("iddotace", drop=False)
+# vynulovat nány 
+merged = merged.where(pd.notnull(merged), None)
+
+
 # zabalit merge a nahrát do exportu
 logger.info('pripravuji data pro export')
 merged["data"] = merged.apply(lambda x: dict(idDotace=x.iddotace, 
@@ -136,10 +139,11 @@ merged["data"] = merged.apply(lambda x: dict(idDotace=x.iddotace,
                             kodProjektu=x.kodprojektu,
                             nazevProjektu=x.nazevprojektu,
                             datumAktualizace=x.datumaktualizace,
-                            zdroje=x.zdroje,
+                            zdroj=dict(nazev=x.zdroj,url=x.url),
                             prijemce=x.prijemce,
                             program=x.program,
                             rozhodnuti=x.rozhodnuti,
+                            duplicita=x.duplicita,
                             chyba=x.chyba ), axis=1)
 
 ###### zmergováno, ulozit do db
@@ -166,7 +170,7 @@ save_to_postgres(merged[["iddotace","data"]], "dotace", "dotace")
 logger.info('Pocitani statistickych informaci')
 
 logger.info('rozbaluji dalsi informace ze slovniku')
-merged["ico"] = merged["prijemce"].apply(lambda x: x["ico"] )
+#merged["ico"] = merged["prijemce"].apply(lambda x: x["ico"] )
 merged["jmeno"] = merged["prijemce"].apply(lambda x: x["obchodniJmeno"] )
 merged["sum_roz"] = merged["rozhodnuti"].apply(sumrozhodnuti)
 merged["sum_cer"] = merged["rozhodnuti"].apply(sumcerpani)
@@ -188,7 +192,7 @@ f_not_cedr = ~merged.zdroj.str.contains("cedr")
 #### statistiky
 #REPORT 1 duplicity - potencionální duplicity pro další koumání
 logger.info('hledam potencionalni duplicity')
-duplicates = merged[merged.duplicated(["kodprojektu","sum_max","ico"], keep=False) & f_not_szif & f_not_czechinvest].drop("data", axis=1)
+duplicates = merged[merged.duplicated(["kodprojektu","ico"], keep=False) & f_not_szif & f_not_czechinvest].drop("data", axis=1)
 duplicates.sort_values("kodprojektu")
 report.append(f"Celkem nalezeno {len(duplicates.index)} potencionalnich duplicit.")
 #save_to_postgres(duplicates, "duplicity", "dotace")
@@ -210,3 +214,4 @@ with open("report.txt", "w") as txt_file:
 
 
 logger.info('Skript uspesne dokoncen')
+
