@@ -6,6 +6,7 @@ import re
 from datetime import datetime
 from sqlalchemy import create_engine, types, schema
 import logging
+import requests
 
 # set logging to file and stderr
 logger = logging.getLogger()
@@ -73,7 +74,24 @@ def fix_ico_format(ico: str):
 ################### ICO check functions ###################
 ## podle následujících funkcí budeme moct kontrolovat iča
 logger.info('pripravuji data pro nastaveni ico')
-df = pd.read_csv("firmyorig.csv.gz", dtype=str, compression="gzip")
+
+firmyFilename = "firmy.txt"
+if (not os.path.exists(firmyFilename)):
+    logger.info('soubor firmy.txt nenalezen lokalne, stahuji')
+    authToken = os.environ.get('HS_AUTH_TOKEN')
+    url = "https://www.hlidacstatu.cz/api/v2/firmy/Vsechny"
+    headers = {"Authorization": "authToken"}
+    req = requests.get(url, headers=headers)
+    text = req.text
+
+    logger.info('ukladam soubor firmy.txt na disk')
+    with open(firmyFilename, "w", encoding="utf8") as text_file:
+        text_file.write(text.replace('\r', ''))
+
+
+df = pd.read_csv(firmyFilename, dtype=str, delimiter='\t', header=None, names=['ico', 'jmeno'])
+
+
 
 hlidacIcoJmeno = df.set_index("ico")["jmeno"].squeeze().to_dict()
 df["jmeno"] = df["jmeno"].str.lower()
