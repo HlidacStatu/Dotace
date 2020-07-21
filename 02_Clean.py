@@ -388,8 +388,8 @@ dotace2013 = pd.read_sql_table("dotace2013", postgre_cnn_import, schema="eufondy
 logger.info('fixuji vadna data')
 dotace2013["rozhodnuti_smlouva_o_poskytnuti_dotace_eu_zdroje_"] = dotace2013["rozhodnuti_smlouva_o_poskytnuti_dotace_eu_zdroje_"].fillna(0)
 dotace2013["proplacene_prostredky_prijemcum_vyuctovane_eu_zdroje_"] = dotace2013["proplacene_prostredky_prijemcum_vyuctovane_eu_zdroje_"].fillna(0)
-dotace2013["rozhodnuti_smlouva_o_poskytnuti_dotace_verejne_prostredky_celke"] = dotace2013["rozhodnuti_smlouva_o_poskytnuti_dotace_verejne_prostredky_celke"].fillna(0)
-dotace2013["proplacene_prostredky_prijemcum_vyuctovane_verejne_prostredky_c"] = dotace2013["proplacene_prostredky_prijemcum_vyuctovane_verejne_prostredky_c"].fillna(0)
+dotace2013["rozhodnuti_smlouva_o_poskytnuti_dotace_verejne_prostredky_celke"] = dotace2013["rozhodnuti_smlouva_o_poskytnuti_dotace_verejne_prostredky_celke"].fillna(0) - dotace2013["rozhodnuti_smlouva_o_poskytnuti_dotace_eu_zdroje_"]
+dotace2013["proplacene_prostredky_prijemcum_vyuctovane_verejne_prostredky_c"] = dotace2013["proplacene_prostredky_prijemcum_vyuctovane_verejne_prostredky_c"].fillna(0) - dotace2013["proplacene_prostredky_prijemcum_vyuctovane_eu_zdroje_"]
 
 # zabalit čerpání a rozhodnutí do dict
 logger.info('vytvarim rozhodnuti')
