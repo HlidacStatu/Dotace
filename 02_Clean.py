@@ -7,6 +7,7 @@ from datetime import datetime
 from sqlalchemy import create_engine, types, schema
 import logging
 import requests
+import unidecode
 
 # set logging to file and stderr
 logger = logging.getLogger()
@@ -601,6 +602,65 @@ czi = czi[['iddotace', 'nazevprojektu', 'program', 'prijemce', 'rozhodnuti', 'ch
 prep_dotace_for_export(czi)
 save_to_postgres(czi, "dotace", "czechinvest")
 logger.info('czechinvest uspesne zpracovan')
+
+##################################### DE MINIMIS #####################################
+logger.info('Zpracovavam De minimis ...')
+def create_deminimis_rozhodnuti(podpora, podporadatum, poskytovatel, podporaformakod):
+    rok = podporadatum.year if podporadatum is not None else None
+    czcerpanodict = [dict(castkaSpotrebovana = podpora, rok = rok)] if podpora != 0 else None
+    czrozhodnutodict = dict(castkaRozhodnuta = podpora, poskytovatel=poskytovatel, rok = rok, jepujcka=(podporaformakod == 69 or podporaformakod == 50 or podporaformakod == 51 ), cerpani=czcerpanodict)
+    return [czrozhodnutodict]
+
+def normalize_column_name(name):
+    strippedChars = re.sub(r'\W+', '_', name)
+    return unidecode.unidecode(strippedChars).lower()
+
+logger.info('Nacitam data za do roku 2006')
+deminimis = pd.read_sql_table("dotace", postgre_cnn_import, schema="deminimis")
+
+logging.info('Normalizuji nazvy sloupcu')
+deminimis.columns = [normalize_column_name(c) for c in deminimis.columns]
+#deminimis.drop_duplicates("kod_projektu", keep="first", inplace=True)
+
+logger.info('odstranuji nechtene informace (zrusene dotace)')
+deminimis = deminimis[deminimis.stavkod != 4]
+deminimis = deminimis[deminimis.podporaforma_kod != 61]
+
+# zabalit čerpání a rozhodnutí do dict
+logger.info('vytvarim rozhodnuti')
+deminimis["rozhodnuti"] = deminimis.apply(lambda x: create_deminimis_rozhodnuti(x["podporaczk"],x["podporadatum"],x["poskytovatelojm"],x["podporaforma_kod"] ),axis=1)
+
+logger.info('nastavuji id')
+deminimis["iddotace"] = deminimis["id"].astype(str)
+
+logger.info('pripravuji finalni strukturu')
+deminimis = deminimis.rename(columns={'projektid':'kodprojektu',
+                                    'podporaucel':'nazevprojektu',
+                                    'edidat':'datumaktualizace',
+                                    'podporadatum':'datumpodpisu'
+                                    })
+
+logger.info('vytvarim prijemce')
+deminimis["prijemce"] = deminimis.apply(lambda x: dict(obchodniJmeno=x["jmenoprijemce"],ico=x["ico"],hlidacJmeno=getJmenoFromIco(x["ico"])), axis=1)
+
+logger.info('detekuji chyby')
+deminimis["chyba"] = deminimis.apply(lambda x: [], axis=1)
+
+logger.info('vybiram vysledna data')
+deminimis = deminimis[["iddotace","datumpodpisu","kodprojektu","nazevprojektu","prijemce","rozhodnuti","datumaktualizace","chyba"]]
+deminimis["zdroj"] = "deminimis"
+
+logger.info('generuji url')
+deminimis["url"] = "https://www.hlidacstatu.cz/data/Detail/de-minimis/" + deminimis.iddotace.astype(str)
+
+deminimis["program"] = None
+
+logger.info('deminimis hotovo')
+
+prep_dotace_for_export(deminimis)
+save_to_postgres(deminimis, "dotace", "deminimis")
+logger.info('deminimis uspesne zpracovan')
+
 
 logger.info('Konec skriptu')
 

@@ -82,6 +82,9 @@ logger.info('Loading szif')
 szif = pd.read_sql_table("dotace", postgre_cnn_cleaning, schema="szif")
 logger.info('Loading czechinvest')
 czi = pd.read_sql_table("dotace", postgre_cnn_cleaning, schema="czechinvest")
+logger.info('Loading deminimis')
+deminimis = pd.read_sql_table("dotace", postgre_cnn_cleaning, schema="deminimis")
+
 
 # zajistit unikátnost id
 logger.info('nastavuji index')
@@ -90,16 +93,18 @@ eufondy["iddotace"] = "eufondy-" + eufondy["iddotace"]
 dotinfo["iddotace"] = "dotinfo-" + dotinfo["iddotace"]
 szif["iddotace"] = "szif-" + szif["iddotace"]
 czi["iddotace"] = "czechinvest-" + czi["iddotace"]
+deminimis["iddotace"] = "deminimis-" + deminimis["iddotace"]
 
 #zapsat počty záznamů
 report.append(f"Z cedr bylo nacteno {len(cedr.index)} polozek.")
 report.append(f"Z eufondy bylo nacteno {len(eufondy.index)} polozek.")
 report.append(f"Z dotinfo bylo nacteno {len(dotinfo.index)} polozek.")
-report.append(f"Z szif bylo nacteno {len(szif.index)} polozek. Tyto zaznamy jsou unikatni (neexistuje o nich informace v CEDRu).")
-report.append(f"Z czechinvest bylo nacteno {len(czi.index)} polozek. Tyto zaznamy jsou unikatni (neexistuje o nich informace v CEDRu).")
+report.append(f"Z szif bylo nacteno {len(szif.index)} polozek.")
+report.append(f"Z czechinvest bylo nacteno {len(czi.index)} polozek.")
+report.append(f"Z deminimis bylo nacteno {len(deminimis.index)} polozek.")
 # merge
 logger.info('spojuji zdroje')
-merged = pd.concat([cedr,eufondy,dotinfo,szif,czi])
+merged = pd.concat([cedr,eufondy,dotinfo,szif,czi,deminimis])
 # set index
 merged = merged.set_index("iddotace", drop=False)
 

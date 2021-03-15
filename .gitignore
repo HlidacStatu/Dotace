@@ -11,6 +11,10 @@ __pycache__/
 
 conns
 
+# .net
+bin/
+obj/
+
 # Distribution / packaging
 .Python
 build/
