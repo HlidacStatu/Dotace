@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
@@ -28,9 +29,23 @@ namespace DeMinimis
                 throw new Exception("Connection is not opened.");
             }
 
+            await CreateSchema(dbConnection);
+
             return dbConnection;
         }
-        
+
+        private async Task CreateSchema(NpgsqlConnection dbConnection)
+        {
+            string? schemaName = _connectionString
+                ?.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                ?.Where(s => s?.StartsWith("SearchPath") ?? false)
+                ?.Select(s => s?.Split('=')[1])
+                ?.FirstOrDefault();
+            
+            if (!string.IsNullOrWhiteSpace(schemaName))
+                await dbConnection.ExecuteAsync($"CREATE SCHEMA IF NOT EXISTS {schemaName}");
+        }
+
         /// <summary>
         /// Inserts many to database
         /// </summary>
