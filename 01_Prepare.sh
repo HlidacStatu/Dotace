@@ -21,3 +21,5 @@ cd ..
 cd szif
 python3 LoadSzif.py
 cd ..
+
+cd DeMinimis

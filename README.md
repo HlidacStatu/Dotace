@@ -17,8 +17,9 @@ Projekt pro stažení různých zdrojů dotací, jejich sjednocení a uložení 
     postgre_cnn_import = "postgresql://user:password@127.0.0.1:5432/import"
     ```
 
-6. `chmod +x runall.sh`
-7. spustit runall.sh
+5. pokud není nainstalovaný .net runtime, tak spustit `.\DeMinimis\install_sdk.sh`
+6. pokud runall není spustitelný, tak přidat atribut `chmod +x runall.sh`
+7. spustit sudo `nohup ./runall.sh`
 
 ## Známé problémy se zdroji dat
 
