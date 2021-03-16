@@ -47,7 +47,7 @@ filePath = DATA_DIR + file
 col_names= ["id", "prijemce", "ico", "projekt", "program", "rozhodnuti_mil_czk", "rok_podani","rozhodnuti_den","rozhodnuti_mesic","rozhodnuti_rok","zruseno" ]
 use_cols= "A,B,C,D,F,K,W,X,Y,Z,AB"
 logging.info(f"Zpracovávám soubor z [{filePath}]")
-df = pd.read_excel(filePath, sheet_name="PROJECTS", skiprows=3, skipfooter=43, usecols=use_cols, header=None, names=col_names)
+df = pd.read_excel(filePath, sheet_name="PROJEKTY", skiprows=3, skipfooter=43, usecols=use_cols, header=None, names=col_names)
 # odmáznutí prázdných řádků
 df = df.dropna(subset=["id","prijemce"], how='all')
 
