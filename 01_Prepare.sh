@@ -23,3 +23,5 @@ python3 LoadSzif.py
 cd ..
 
 cd DeMinimis
+./run.sh
+cd ..
