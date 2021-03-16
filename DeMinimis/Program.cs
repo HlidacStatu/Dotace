@@ -77,7 +77,7 @@ namespace DeMinimis
             var baseRecordAddress = "https://www.hlidacstatu.cz/api/v2/datasety/de-minimis/zaznamy/";
             
             List<Task<DeMinimisDetail?>> taskList = new();
-            foreach (var recordId in recordIds.Take(300))
+            foreach (var recordId in recordIds)
             {
                 var uri = new Uri(baseRecordAddress + recordId.Id);
                 var deMinimisTask = GetResult<DeMinimisDetail>(HttpPolicy, httpClient, uri);

@@ -5,4 +5,6 @@ if ! [ -x "$(command -v dotnet)" ]; then
   exit 1.
 fi
 
-dotnet run 
+
+dotnet publish -o bin/app
+dotnet bin/app/DeMinimis.dll --max-concurrency 15 --connection-string ${deminimis_cnn_psql} --hlidac-token ${deminimis_hlidacapikey}
