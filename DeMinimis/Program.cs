@@ -50,6 +50,9 @@ namespace DeMinimis
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(connectionString));
             if (string.IsNullOrWhiteSpace(hlidacToken))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(hlidacToken));
+            
+            Console.WriteLine($"cnn string=[{connectionString}]");
+            Console.WriteLine($"api key=[{hlidacToken}]");
             Console.WriteLine("Starting");
 
             _maxConcurrency = maxConcurrency;

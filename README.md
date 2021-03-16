@@ -15,6 +15,8 @@ Projekt pro stažení různých zdrojů dotací, jejich sjednocení a uložení 
     ```bash
     postgre_cnn_cleaning = "postgresql://user:password@127.0.0.1:5432"
     postgre_cnn_import = "postgresql://user:password@127.0.0.1:5432/import"
+    deminimis_cnn_psql= "Host=localhost;Database=import;Username=dialogs;Password=dialogs;SearchPath=deminimis"
+    deminimis_hlidacapikey= "key from hs"
     ```
 
 5. pokud není nainstalovaný .net runtime, tak spustit `.\DeMinimis\install_sdk.sh`
