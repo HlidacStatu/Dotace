@@ -10,8 +10,15 @@ Projekt pro stažení různých zdrojů dotací, jejich sjednocení a uložení 
 
 2. promáznout databázi (postgres), nebo ji vytvořit znovu
 3. git pull na cílovém stroji
-4. `chmod +x runall.sh`
-5. spustit runall.sh
+4. nastavit následující environment variables, které ukazují na postgres db
+
+    ```bash
+    postgre_cnn_cleaning = "postgresql://user:password@127.0.0.1:5432"
+    postgre_cnn_import = "postgresql://user:password@127.0.0.1:5432/import"
+    ```
+
+6. `chmod +x runall.sh`
+7. spustit runall.sh
 
 ## Známé problémy se zdroji dat
 
