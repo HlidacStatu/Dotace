@@ -140,10 +140,10 @@ merged = merged.where(pd.notnull(merged), None)
 # zabalit merge a nahrát do exportu
 logger.info('pripravuji data pro export')
 merged["data"] = merged.apply(lambda x: dict(idDotace=x.iddotace, 
-                            datumPodpisu=x.datumpodpisu,
+                            datumPodpisu=x.datumpodpisu if type(x.datumpodpisu) is not pd.Timestamp else x.datumpodpisu.strftime("%Y-%m-%dT00:00:00.000Z"),
                             kodProjektu=x.kodprojektu,
                             nazevProjektu=x.nazevprojektu,
-                            datumAktualizace=x.datumaktualizace,
+                            datumAktualizace=x.datumaktualizace if type(x.datumaktualizace) is not pd.Timestamp else x.datumaktualizace.strftime("%Y-%m-%dT00:00:00.000Z"),
                             zdroj=dict(nazev=x.zdroj,url=x.url),
                             prijemce=x.prijemce,
                             program=x.program,

@@ -609,7 +609,7 @@ logger.info('czechinvest uspesne zpracovan')
 ##################################### DE MINIMIS #####################################
 logger.info('Zpracovavam De minimis ...')
 def create_deminimis_rozhodnuti(podpora, podporadatum, poskytovatel, podporaformakod):
-    rok = podporadatum.year if podporadatum is not None else None
+    rok = podporadatum.year if pd.isnull(podporadatum) == False or podporadatum is not None else None
     czcerpanodict = [dict(castkaSpotrebovana = podpora, rok = rok)] if podpora != 0 else None
     czrozhodnutodict = dict(castkaRozhodnuta = podpora, poskytovatel=poskytovatel, rok = rok, jepujcka=(podporaformakod == 69 or podporaformakod == 50 or podporaformakod == 51 ), cerpani=czcerpanodict)
     return [czrozhodnutodict]
