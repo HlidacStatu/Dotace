@@ -562,7 +562,10 @@ logger.info('SZIF uspesne zpracovano')
 ## czechinvest
 logger.info('Zpracovavam Czechinvest ...')
 def create_czi_rozhodnuti(rozhodnuto, rok):
-    czrozhodnutodict = dict(castkaRozhodnuta = rozhodnuto, rok=rok, zdroj="CZ")
+    if rok == -1:
+        czrozhodnutodict = dict(castkaRozhodnuta = rozhodnuto, zdroj="CZ")
+    else:
+        czrozhodnutodict = dict(castkaRozhodnuta = rozhodnuto, rok=rok, zdroj="CZ")
     return [czrozhodnutodict]
 
 
@@ -573,8 +576,8 @@ czi["castka"] = czi["rozhodnuti_mil_czk"].apply(lambda x: x * 1000000)
 czi["datumpodpisu"] = czi["rok_podani"].fillna(-1).astype('Int64').apply(lambda x: datetime.strptime(str(x), '%Y').strftime("%Y-%m-%dT00:00:00.000Z") if x != -1 else None)
 czi["iddotace"] = czi["id"].astype(str)
 
-czi["rozhodnuti_rok"] = czi["rozhodnuti_rok"].apply(lambda x: re.match(r"\d\d\d\d", x).group() if x!= None else None)
-czi["rozhodnuti_rok"] = czi["rozhodnuti_rok"].astype(int)
+czi["rozhodnuti_rok"] = czi["rozhodnuti_rok"].fillna(-1).astype('Int64') #.apply(lambda x: str(x) if x!= -1 else None)
+#czi["rozhodnuti_rok"] = czi["rozhodnuti_rok"].astype(int)
 
 # odstranit zrušené dotace
 czi = czi[czi["zruseno"].isna()]
