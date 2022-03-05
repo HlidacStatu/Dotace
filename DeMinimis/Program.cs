@@ -1,36 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO.Compression;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
-using Polly;
-using Polly.Extensions.Http;
-using Polly.Retry;
+using Common;
 
 namespace DeMinimis
 {
     class Program
     {
-        private static int _maxConcurrency;
-        private static SemaphoreSlim _semaphore = new(10);
         
-        private static readonly JsonSerializerOptions Options = new()
-        {
-            PropertyNameCaseInsensitive = true
-        };
-        
-        private static readonly AsyncRetryPolicy<HttpResponseMessage> HttpPolicy = HttpPolicyExtensions
-            .HandleTransientHttpError()
-            .WaitAndRetryAsync(new[]
-            {
-                TimeSpan.FromSeconds(1),
-                TimeSpan.FromSeconds(2),
-                TimeSpan.FromSeconds(3)
-            });
 
         /// <summary>
         /// 
@@ -55,11 +34,11 @@ namespace DeMinimis
             Console.WriteLine($"api key=[{hlidacToken}]");
             Console.WriteLine("Starting");
 
-            _maxConcurrency = maxConcurrency;
-            _semaphore = new SemaphoreSlim(_maxConcurrency);
+            
             var dumpUri = new Uri(dumpUrl);
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Token", hlidacToken);
+            var clientWrapper = new HttpWrapper(httpClient, maxConcurrency);
             var deMinimisRepository = new DeMinimisRepository(connectionString);
             Console.WriteLine("Init done");
             
@@ -67,7 +46,7 @@ namespace DeMinimis
             Console.WriteLine("DB table created.");
 
             // download dump with IDs from Hlidac
-            var recordIds = await LoadHlidacIds(httpClient, dumpUri, HttpPolicy);
+            var recordIds = await clientWrapper.GetZippedResult<List<HlidacDump>?>(dumpUri);
             if (recordIds is null)
             {
                 throw new Exception($"No data were loaded from {dumpUri}");
@@ -80,7 +59,7 @@ namespace DeMinimis
             foreach (var recordId in recordIds)
             {
                 var uri = new Uri(baseRecordAddress + recordId.Id);
-                var deMinimisTask = GetResult<DeMinimisDetail>(HttpPolicy, httpClient, uri);
+                var deMinimisTask = clientWrapper.GetResult<DeMinimisDetail>(uri);
                 taskList.Add(deMinimisTask);
             }
 
@@ -90,61 +69,6 @@ namespace DeMinimis
             // todo: save data
             await deMinimisRepository.InsertMany(results);
             Console.WriteLine("All records inserted.");
-        }
-        
-
-        private static async Task<T?> GetResult<T>(AsyncRetryPolicy<HttpResponseMessage> policy,
-            HttpClient httpClient, Uri uri)
-        {
-            try
-            {
-                await _semaphore.WaitAsync();
-
-                var response = await policy.ExecuteAsync(async () => await httpClient.GetAsync(uri));
-                if (response.IsSuccessStatusCode)
-                {
-                    var stream = await response.Content.ReadAsStreamAsync();
-                    var result = await JsonSerializer.DeserializeAsync<T>(stream, Options);
-                    return result;
-                }
-                else
-                {
-                    Console.WriteLine($"Error response [{response.StatusCode}] when requesting {uri}");
-                }
-            }
-            catch (Exception ex)
-            {
-                
-                Console.WriteLine($"Error occured - [{ex.Message}]");
-            }
-            finally
-            {
-                _semaphore.Release();
-            }
-
-            return default;
-        }
-
-        private static async Task<List<HlidacDump>?> LoadHlidacIds(HttpClient httpClient, Uri url,
-            AsyncRetryPolicy<HttpResponseMessage> policy)
-        {
-            var response = await policy.ExecuteAsync(async () => await httpClient.GetAsync(url));
-            if (response.IsSuccessStatusCode)
-            {
-                var responseStream = await response.Content.ReadAsStreamAsync();
-                using var zipArchive = new ZipArchive(responseStream, ZipArchiveMode.Read);
-                var zipArchiveEntry = zipArchive.Entries.First();
-                await using var openedEntry = zipArchiveEntry.Open();
-                
-                var ids = await JsonSerializer.DeserializeAsync<List<HlidacDump>>(openedEntry, Options);
-                return ids;
-            }
-            else
-            {
-                Console.WriteLine($"Error response [{response.StatusCode}] when requesting {url}");
-            }
-
-            return default;
         }
     }
 }

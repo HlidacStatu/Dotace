@@ -4,7 +4,7 @@ Projekt pro stažení různých zdrojů dotací, jejich sjednocení a uložení 
 ## Jak to spustit
 1. doplnit odkazy a zdroje dat do gitu, případně staré překopírovat novýma:
    1. [czechinvest](https://www.czechinvest.org/cz/Sluzby-pro-investory/Investicni-pobidky)
-   2. [szif](https://www.szif.cz/irj/portal/szif/seznam-prijemcu-dotaci)
+   2. [szif](https://www.szif.cz/irj/portal/szif/seznam-prijemcu-dotaci) - zveřejňují se až k 31.5. za předchozí fiskální (od října do října) rok
    3. eufondy pokud jsou nové (jednou za x let), teď by měli být nové od 2021, ale zatím se mi nepodařilo dohledat zdroj
    4. spustit dotinfo na apify a nakopírovat výstup do repo
 
