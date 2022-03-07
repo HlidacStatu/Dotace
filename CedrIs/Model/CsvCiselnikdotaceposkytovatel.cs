@@ -2,6 +2,6 @@ namespace CedrIs.Model;
 
 public class CsvCiselnikdotaceposkytovatel
 {
-    public string Iridotaceposkytovatel { get; set;}
-    public string Dotaceposkytovatelnazev { get; set;}
+    public string Id { get; set;}
+    public string DotacePoskytovatelNazev { get; set;}
 }

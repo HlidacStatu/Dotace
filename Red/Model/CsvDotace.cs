@@ -6,7 +6,6 @@ namespace Red.Model;
 public class CsvDotace
 {
     public string Iridotace { get; set; }
-    public string Kod { get; set; }
     public string Identifikator { get; set; }
     public string Nazev { get; set; }
     

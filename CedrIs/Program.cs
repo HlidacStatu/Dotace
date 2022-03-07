@@ -87,130 +87,36 @@ var csvAdresa = csvAdresaSidlo.Concat(csvAdresaBydliste);
 csvAdresaSidlo = null;
 csvAdresaBydliste = null;
 
+var csvProgram = await CsvHelpers.LoadCsvAsDictionary<CsvCiselnikProgram>(folder, d => d.Id, "ciselnikProgramv01.csv.gz");
 
+var tmpOp1 = await CsvHelpers.LoadCsvAsDictionary<CsvCiselnikOperacniProgram>(folder, d => d.IdOperacniProgram, "ciselnikMmrOperacniProgramv01.csv.gz");
+var tmpOp2 = await CsvHelpers.LoadCsvAsDictionary<CsvCiselnikOperacniProgram>(folder, d => d.IdOperacniProgram, "ciselnikCedrOperacniProgramv01.csv.gz");
+var csvOperacniProgramMerged = tmpOp1.Concat(tmpOp2);
+tmpOp1 = null;
+tmpOp2 = null;
+
+var tmpOpatreni1 = await CsvHelpers.LoadCsvAsDictionary<CsvCiselnikOpatreni>(folder, d => d.IdOpatreni, "ciselnikMmrOpatreniv01.csv.gz");
+var tmpOpatreni2 = await CsvHelpers.LoadCsvAsDictionary<CsvCiselnikOpatreni>(folder, d => d.IdOpatreni, "ciselnikCedrOpatreniv01.csv.gz");
+var csvOpatreniMerged = tmpOpatreni1.Concat(tmpOpatreni2);
+tmpOpatreni1 = null;
+tmpOpatreni2 = null;
+
+var tmpGs1 = await CsvHelpers.LoadCsvAsDictionary<CsvCiselnikGrantoveSchema>(folder, d => d.IdGrantoveSchema, "ciselnikMmrGrantoveSchemav01.csv.gz");
+var tmpGs2 = await CsvHelpers.LoadCsvAsDictionary<CsvCiselnikGrantoveSchema>(folder, d => d.IdGrantoveSchema, "ciselnikCedrGrantoveSchemav01.csv.gz");
+var csvGrantoveSchemaMerged = tmpGs1.Concat(tmpGs2);
+tmpGs1 = null;
+tmpGs2 = null;
+
+var csvPrijemce = await CsvHelpers.LoadCsvAsDictionary<CsvPrijemce>(folder, d => d.IdPrijemce, "PrijemcePomoci.csv.gz");
+var csvRozhodnuti = await CsvHelpers.LoadCsvAsDictionaryList<CsvRozhodnuti>(folder, d => d.IdDotace, "Rozhodnuti.csv.gz");
+var csvCisPoskytovatel =
+    await CsvHelpers.LoadCsvAsDictionary<CsvCiselnikdotaceposkytovatel>(folder, d => d.Id, "ciselnikDotacePoskytovatelv01.csv.gz");
+var csvCisFinZdroj = await CsvHelpers.LoadCsvAsDictionary<CsvCiselnikfinancnizdroj>(folder, d => d.Id);
+var csvRozpoctoveObdobi = await CsvHelpers.LoadCsvAsDictionaryList<CsvRozpoctoveobdobi>(folder, d => d.IdRozhodnuti, "RozpoctoveObdobi.csv.gz");
+
+var csvDotace = await CsvHelpers.LoadCsvAsDictionary<CsvDotace>(folder, d => d.Iridotace); // mohlo by byt enumeraci
 
 
 Console.WriteLine("stopp");
-//var csvDotace = await CsvHelpers.LoadCsvAsDictionary<CsvDotace>(folder, d => d.Iridotace); // mohlo by byt enumeraci
 
 
-
-
-
-
-
-// pospojování dat dohromady
-// var dotaceResults = new List<Common.IntermediateDb.Dotace>();
-// foreach (var dotaceRec in csvDotace)
-// {
-//     var val = dotaceRec.Value;
-//     if (csvCiselnikOperacniProgram.TryGetValue(val.Irioperacniprogram, out var operacniProgramRec) == false)
-//     {
-//         appLogger.Warning($"U dotace [{val.Iridotace}] nenalezen operacni program [{val.Irioperacniprogram}]");    
-//     }
-//
-//     if (csvPrijemce.TryGetValue(val.Iriprijemce, out var prijemceRec) == false)
-//     {
-//         appLogger.Warning($"U dotace [{val.Iridotace}] nenalezen prijemce [{val.Iriprijemce}]");
-//     }
-//
-//     if (csvAdresa.TryGetValue(val.Iriprijemce, out var adresaRec) == false)
-//     {
-//         appLogger.Warning($"U dotace [{val.Iridotace}] nenalezena adresa [{val.Iriprijemce}]");
-//     }
-//     
-//     var rozhodnutiPack = new List<Common.IntermediateDb.Rozhodnuti>();
-//     if (csvRozhodnuti.TryGetValue(val.Iridotace, out var rozhodnutiRecs) == false)
-//     {
-//         appLogger.Warning($"U dotace [{val.Iridotace}] nenalezeno rozhodnuti [{val.Iridotace}]");
-//     }
-//     else
-//     {
-//         foreach (var rozhodnutiRec in rozhodnutiRecs)
-//         {
-//             if (csvCisPoskytovatel.TryGetValue(rozhodnutiRec.IriDotacePoskytovatel, out var poskytovatelRec) == false)
-//             {
-//                 appLogger.Warning($"U rozhodnuti [{rozhodnutiRec.Irirozhodnuti}] nenalezen poskytovatel [{rozhodnutiRec.IriDotacePoskytovatel}]");
-//             }
-//
-//             if (csvCisFinZdroj.TryGetValue(rozhodnutiRec.Irifinancnizdroj, out var finZdrojRec) == false)
-//             {
-//                 appLogger.Warning($"U rozhodnuti [{rozhodnutiRec.Irirozhodnuti}] nenalezen financni zdroj [{rozhodnutiRec.Irifinancnizdroj}]");
-//             }
-//             
-//             var cerpaniPack = new List<Common.IntermediateDb.Cerpani>();
-//             if (csvRozpoctoveObdobi.TryGetValue(rozhodnutiRec.Irirozhodnuti, out var rozpoctoveObdobiRecs) == false)
-//             {
-//                 appLogger.Warning($"U rozhodnuti [{rozhodnutiRec.Irirozhodnuti}] nenalezeno rozpoctove obdobi [{rozhodnutiRec.Irirozhodnuti}]");
-//             }
-//             else
-//             {
-//                 foreach (var rozpoctoveobdobiRec in rozpoctoveObdobiRecs)
-//                 {
-//                     cerpaniPack.Add(new Common.IntermediateDb.Cerpani()
-//                     {
-//                         Id = rozpoctoveobdobiRec.Irirozpoctoveobdobi,
-//                         Rok = rozpoctoveobdobiRec.Obdobi,
-//                         CastkaSpotrebovana = rozpoctoveobdobiRec.Castkaspotrebovana - rozpoctoveobdobiRec.Castkavracena
-//                     });
-//                 }
-//             }
-//
-//             rozhodnutiPack.Add(new Common.IntermediateDb.Rozhodnuti()
-//             {
-//                 Id = rozhodnutiRec.Irirozhodnuti,
-//                 Rok = rozhodnutiRec.Rokrozhodnuti,
-//                 JePujcka = rozhodnutiRec.Navratnostindikator,
-//                 CastkaPozadovana = rozhodnutiRec.Castkapozadovana,
-//                 CastkaRozhodnuta = rozhodnutiRec.Castkarozhodnuta,
-//                 Poskytovatel = poskytovatelRec?.Dotaceposkytovatelnazev ?? "",
-//                 ZdrojFinanci = finZdrojRec?.Financnizdrojnazev ?? "",
-//                 Cerpani = cerpaniPack,
-//             });
-//         }
-//     }
-//     
-//     
-//     Common.IntermediateDb.Dotace dotace = new()
-//     {
-//         Id = $"ISRED-{val.Iridotace.Split('/').Last()}",
-//         IdDotace = val.Iridotace,
-//         DatumAktualizace = val.Datumaktualizace,
-//         DatumPodpisu = val.Podpisdatum,
-//         KodProjektu = val.Identifikator,
-//         NazevProjektu = val.Nazev,
-//         ProgramNazev = operacniProgramRec?.OperacniProgramNazev,
-//         ProgramKod = operacniProgramRec?.OperacaniProgramKod,
-//         PrijemceIco = prijemceRec?.Ico,
-//         PrijemceObchodniJmeno = prijemceRec?.Obchodninazev,
-//         PrijemceJmeno = (prijemceRec?.Jmeno + " " + prijemceRec?.Prijmeni).Trim(),
-//         PrijemceRokNarozeni = prijemceRec?.Roknarozeni,
-//         PrijemceObec = adresaRec?.Obecnazev,
-//         PrijemceOkres = adresaRec?.Okres,
-//         PrijemceUlice = adresaRec?.Ulice,
-//         PrijemcePSC = adresaRec?.Psc,
-//         PrijemceCisloDomovni = adresaRec?.Cislodomovni,
-//         ZdrojNazev = "IS Red",
-//         ZdrojUrl = "https://red.financnisprava.cz/registr-dotaci/prijemci",
-//         Rozhodnuti = rozhodnutiPack
-//
-//
-//     };
-//     dotaceResults.Add(dotace);
-// }
-// appLogger.Debug("check memory please");
-//
-// appLogger.Debug("Uploading dotace to db");
-//
-// var dotaceChunks = dotaceResults.Chunk(1000);
-//
-// int chunkNumber = 0;
-// foreach (var recordChunk in dotaceChunks)
-// {
-//     appLogger.Debug($"Uploading chunk nbr {chunkNumber++}");
-//
-//     await using var db = new IntermediateDbContext(dbIntermediateCnnString);
-//             
-//     db.Dotace.AddRange(recordChunk);
-//     await db.SaveChangesAsync();
-// }

@@ -2,6 +2,6 @@ namespace CedrIs.Model;
 
 public class CsvCiselnikfinancnizdroj
 {
-    public string Irifinancnizdroj { get; set;} 
-    public string Financnizdrojnazev { get; set;}
+    public string Id { get; set;} 
+    public string FinancniZdrojNazev { get; set;}
 }
