@@ -15,7 +15,7 @@ public class CsvDotace
     public string IriOpatreni { get; set; }
 
 
-    public string ProjektIdentifikator { get; set; }
+    public string ProjektIdnetifikator { get; set; } //tady mají chybu v názvu
     public string ProjektNazev { get; set; }
 
 

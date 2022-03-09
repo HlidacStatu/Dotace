@@ -129,12 +129,12 @@ foreach (var dotaceRec in csvDotace)
 
     Dotace dotace = new()
     {
-        Id = $"ISRED-{val.Iridotace.Split('/').Last()}",
+        Id = $"ISRED-{val.Iridotace}",
         IdDotace = val.Iridotace,
         DatumAktualizace = val.Datumaktualizace,
         DatumPodpisu = val.Podpisdatum,
         KodProjektu = val.Identifikator,
-        NazevProjektu = val.Nazev,
+        NazevProjektu = val.Nazev.Replace("\0", ""), // replace null character
         ProgramNazev = operacniProgramRec?.OperacniProgramNazev,
         ProgramKod = operacniProgramRec?.OperacaniProgramKod,
         PrijemceIco = prijemceRec?.Ico,
@@ -152,8 +152,6 @@ foreach (var dotaceRec in csvDotace)
     };
     dotaceResults.Add(dotace);
 }
-
-appLogger.Debug("check memory please");
 
 appLogger.Debug("Uploading dotace to db");
 
