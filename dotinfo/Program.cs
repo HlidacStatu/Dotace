@@ -35,23 +35,24 @@ foreach (var dotaceRec in dotinfo)
             JePujcka = dotaceRec.DotaceFormaFinancovaniDotace?.ToUpper() == "NFV"
         }
     };
-    
-    
+
+
     var id = dotaceRec.Url?.Split("/").Last();
     var kodProjektu = string.IsNullOrWhiteSpace(dotaceRec.DotaceEvidencniCisloDotace)
         ? dotaceRec.KodProjektu
-        : dotaceRec.DotaceEvidencniCisloDotace; 
+        : dotaceRec.DotaceEvidencniCisloDotace;
     var obchodniJmeno = string.IsNullOrWhiteSpace(dotaceRec.UcastnikObchodniJmeno)
         ? dotaceRec.UcastnikPrijemceDotaceJmeno
         : dotaceRec.UcastnikObchodniJmeno;
-    
+
+    bool dateFound = DateTime.TryParse(dotaceRec.DotaceDatumVydaniRozhodnuti, out var datumPodpisu);
+
+
     Dotace dotace = new()
     {
         Id = $"dotinfo-{id}",
         IdDotace = id,
-        DatumPodpisu = dotaceRec.DotaceDatumVydaniRozhodnuti != null
-            ? DateTime.Parse(dotaceRec.DotaceDatumVydaniRozhodnuti)
-            : null,
+        DatumPodpisu = dateFound ? datumPodpisu : null,
         NazevProjektu = dotaceRec.DotaceNazevDotace,
         KodProjektu = kodProjektu,
         ProgramKod = dotaceRec.DotaceIdentifikatorDotKodIs,

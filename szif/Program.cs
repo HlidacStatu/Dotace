@@ -26,7 +26,7 @@ foreach (var dotaceRec in szif)
 {
     int? rok = null;
     var reMatch = Regex.Match(dotaceRec.Id, @"(\d{4})-");
-    if (!reMatch.Success)
+    if (reMatch.Success)
     {
         rok = int.Parse(reMatch.Groups[1].Value);
     }
