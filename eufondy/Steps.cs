@@ -3,7 +3,7 @@ using Common.IntermediateDb;
 
 namespace Eufondy;
 
-public static class CleanUlice
+public static class Steps
 {
     public static List<Rozhodnuti> CreateRozhodnuti(double? rozhodnutoCr,
         double? cerpanoCr,
@@ -14,13 +14,13 @@ public static class CleanUlice
         rozhodnutoCr ??= 0;
         cerpanoEu ??= 0;
         rozhodnutoEu ??= 0;
-        
+
         List<Cerpani> czCerpani = new List<Cerpani>();
         if (cerpanoCr != 0)
         {
             czCerpani.Add(new Cerpani()
             {
-                CastkaSpotrebovana = Convert.ToDecimal(cerpanoCr)
+                CastkaSpotrebovana = Convert.ToDecimal(Math.Round(cerpanoCr.Value, 2))
             });
         }
 
@@ -29,7 +29,7 @@ public static class CleanUlice
         {
             euCerpani.Add(new Cerpani()
             {
-                CastkaSpotrebovana = Convert.ToDecimal(cerpanoEu)
+                CastkaSpotrebovana = Convert.ToDecimal(Math.Round(cerpanoEu.Value, 2))
             });
         }
 
@@ -38,7 +38,7 @@ public static class CleanUlice
         {
             listRozhodnuti.Add(new Rozhodnuti()
             {
-                CastkaRozhodnuta = Convert.ToDecimal(rozhodnutoCr),
+                CastkaRozhodnuta = Convert.ToDecimal(Math.Round(rozhodnutoCr.Value, 2)),
                 Cerpani = czCerpani,
                 Poskytovatel = "CZ"
             });
@@ -48,7 +48,7 @@ public static class CleanUlice
         {
             listRozhodnuti.Add(new Rozhodnuti()
             {
-                CastkaRozhodnuta = Convert.ToDecimal(rozhodnutoEu),
+                CastkaRozhodnuta = Convert.ToDecimal(Math.Round(rozhodnutoEu.Value, 2)),
                 Cerpani = euCerpani,
                 Poskytovatel = "EU"
             });
@@ -64,8 +64,7 @@ public static class CleanUlice
         {
             return $"{psc.Groups[1].Value}{psc.Groups[2].Value}";
         }
+
         return "";
     }
-    
-    
 }

@@ -44,21 +44,5 @@ public static class Steps
         }
 
     }
-
-    public static decimal? GetPriceFromText(string? input)
-    {
-        if (string.IsNullOrWhiteSpace(input))
-            return null;
-        
-        var cleanString = new string(input.Where(c => char.IsDigit(c) || c == '.' || c == ',').ToArray());
-        if (decimal.TryParse(cleanString, out var price))
-        {
-            return price;
-        }
-
-        return null;
-    }
-    
-    
     
 }

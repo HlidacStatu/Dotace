@@ -30,9 +30,9 @@ foreach (var dotaceRec in szif)
     {
         rok = int.Parse(reMatch.Groups[1].Value);
     }
-    
-    decimal.TryParse(dotaceRec.CastkaCr, out var castkaCr);
-    decimal.TryParse(dotaceRec.CastkaEu, out var castkaEu);
+
+    var castkaCr = DataHelper.GetPriceFromText(dotaceRec.CastkaCr);
+    var castkaEu = DataHelper.GetPriceFromText(dotaceRec.CastkaEu);
     
     List<Rozhodnuti> rozhodnuti = new()
     {

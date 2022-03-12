@@ -28,8 +28,8 @@ foreach (var dotaceRec in dotinfo)
     {
         new Rozhodnuti()
         {
-            CastkaRozhodnuta = Steps.GetPriceFromText(dotaceRec.DotaceCastkaSchvalena),
-            CastkaPozadovana = Steps.GetPriceFromText(dotaceRec.DotaceCastkaPozadovana),
+            CastkaRozhodnuta = DataHelper.GetPriceFromText(dotaceRec.DotaceCastkaSchvalena),
+            CastkaPozadovana = DataHelper.GetPriceFromText(dotaceRec.DotaceCastkaPozadovana),
             Poskytovatel = dotaceRec.PoskytovatelPoskytovatelNazevOs ?? "",
             IcoPoskytovatele = dotaceRec.PoskytovatelIcPoskytovatele ?? "",
             JePujcka = dotaceRec.DotaceFormaFinancovaniDotace?.ToUpper() == "NFV"

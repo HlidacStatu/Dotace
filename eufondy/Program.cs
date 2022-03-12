@@ -31,7 +31,7 @@ await using (var eufondyDb = new EufondyDbContext(eufondyCnnString))
 
 foreach (var dotaceRec in dotace2006)
 {
-    var rozhodnuti = CleanUlice.CreateRozhodnuti(dotaceRec.SmlouvaNarodniVerejneProstredky,
+    var rozhodnuti = Steps.CreateRozhodnuti(dotaceRec.SmlouvaNarodniVerejneProstredky,
         dotaceRec.ProplacenoNarodniVerejneProstredky,
         dotaceRec.SmlouvaEuPodil,
         dotaceRec.ProplacenoEuPodil);
@@ -77,14 +77,14 @@ foreach (var dotaceRec in dotace2013)
     var rozhodnutoEu = dotaceRec.RozhodnutiSmlouvaOPoskytnutiDotaceEuZdroje;
     var cerpanoEu = dotaceRec.ProplaceneProstredkyPrijemcumVyuctovaneEuZdroje;
 
-    var rozhodnuti = CleanUlice.CreateRozhodnuti(rozhodnutoCr, cerpanoCr, rozhodnutoEu, cerpanoEu);
+    var rozhodnuti = Steps.CreateRozhodnuti(rozhodnutoCr, cerpanoCr, rozhodnutoEu, cerpanoEu);
 
     var programSplit = dotaceRec.CisloANazevProgramu?.Split(" ", 2, StringSplitOptions.TrimEntries);
     var kodProgramu = programSplit?.Length > 0 ? programSplit[0] : null;
     var nazevProgramu = programSplit?.Length > 1 ? programSplit[1] : null;
     
     var adresaSplit = dotaceRec.AdresaZadatele?.Split(",", 2, StringSplitOptions.TrimEntries);
-    var psc = adresaSplit?.Length > 0 ? CleanUlice.GetPscFromAddress(adresaSplit[0]) : null;
+    var psc = adresaSplit?.Length > 0 ? Steps.GetPscFromAddress(adresaSplit[0]) : null;
     var ulice = adresaSplit?.Length > 0 ? adresaSplit[1].Replace("/", "") : null;
     
     
@@ -135,7 +135,7 @@ foreach (var dotaceRec in dotace2020)
             Cerpani = new List<Cerpani>(),
             Poskytovatel = "ESIF",
             Rok = rokRozhodnuti, 
-            CastkaRozhodnuta = Convert.ToDecimal(dotaceRec.FinancovaniCzv)
+            CastkaRozhodnuta = Convert.ToDecimal(Math.Round(dotaceRec.FinancovaniCzv ?? 0, 2))
         }
     };
 
