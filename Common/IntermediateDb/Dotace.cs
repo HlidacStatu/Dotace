@@ -33,8 +33,6 @@ namespace Common.IntermediateDb
         public string? PrijemceOkres { get; set; }
         public string? PrijemcePSC { get; set; }
         public string? PrijemceUlice { get; set; }
-        public string? PrijemceCisloDomovni { get; set; }
-        
         public string ZdrojNazev { get; set; }
         public string ZdrojUrl { get; set; }
 

@@ -2,23 +2,19 @@
 
 cd "$(dirname $0)"
 
-cd cedr
-python3 LoadCedr.py
-cd ..
-
-cd czechinvest
+cd Czechinvest
 python3 LoadCzinvest.py
 cd ..
 
-cd dotinfo
+cd Dotinfo
 python3 LoadDotinfo.py
 cd ..
 
-cd eufondy
+cd Eufondy
 python3 LoadEufondy.py
 cd ..
 
-cd szif
+cd Szif
 python3 LoadSzif.py
 cd ..
 

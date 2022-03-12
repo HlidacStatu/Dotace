@@ -250,15 +250,5 @@ foreach (var dotaceRec in csvDotace)
 
 appLogger.Debug("Uploading dotace to db");
 
-var dotaceChunks = dotaceResults.Chunk(1000);
-
-int chunkNumber = 0;
-foreach (var recordChunk in dotaceChunks)
-{
-    appLogger.Debug($"Uploading chunk nbr {chunkNumber++}");
-
-    await using var db = new IntermediateDbContext(dbIntermediateCnnString);
-
-    db.Dotace.AddRange(recordChunk);
-    await db.SaveChangesAsync();
-}
+await DotaceRepo.SaveDotaceToDb(dotaceResults, appLogger, dbIntermediateCnnString);
+appLogger.Debug("Finished");

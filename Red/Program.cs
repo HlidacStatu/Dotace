@@ -143,9 +143,8 @@ foreach (var dotaceRec in csvDotace)
         PrijemceRokNarozeni = prijemceRec?.Roknarozeni,
         PrijemceObec = adresaRec?.Obecnazev,
         PrijemceOkres = adresaRec?.Okres,
-        PrijemceUlice = adresaRec?.Ulice,
+        PrijemceUlice = $"{adresaRec?.Ulice} {adresaRec?.Cislodomovni}".Trim(),
         PrijemcePSC = adresaRec?.Psc,
-        PrijemceCisloDomovni = adresaRec?.Cislodomovni,
         ZdrojNazev = "IS Red",
         ZdrojUrl = "https://red.financnisprava.cz/registr-dotaci/prijemci",
         Rozhodnuti = rozhodnutiPack
@@ -155,15 +154,5 @@ foreach (var dotaceRec in csvDotace)
 
 appLogger.Debug("Uploading dotace to db");
 
-var dotaceChunks = dotaceResults.Chunk(1000);
-
-int chunkNumber = 0;
-foreach (var recordChunk in dotaceChunks)
-{
-    appLogger.Debug($"Uploading chunk nbr {chunkNumber++}");
-
-    await using var db = new IntermediateDbContext(dbIntermediateCnnString);
-
-    db.Dotace.AddRange(recordChunk);
-    await db.SaveChangesAsync();
-}
+await DotaceRepo.SaveDotaceToDb(dotaceResults, appLogger, dbIntermediateCnnString);
+appLogger.Debug("Finished");

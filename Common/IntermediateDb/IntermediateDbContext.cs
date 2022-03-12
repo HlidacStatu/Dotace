@@ -25,4 +25,5 @@ public class IntermediateDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasDefaultSchema("dotace");
     }
+    
 }
