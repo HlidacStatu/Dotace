@@ -5,22 +5,17 @@ namespace Eufondy;
 
 public static class Steps
 {
-    public static List<Rozhodnuti> CreateRozhodnuti(double? rozhodnutoCr,
-        double? cerpanoCr,
-        double? rozhodnutoEu,
-        double? cerpanoEu)
+    public static List<Rozhodnuti> CreateRozhodnuti(decimal rozhodnutoCr,
+        decimal cerpanoCr,
+        decimal rozhodnutoEu,
+        decimal cerpanoEu)
     {
-        cerpanoCr ??= 0;
-        rozhodnutoCr ??= 0;
-        cerpanoEu ??= 0;
-        rozhodnutoEu ??= 0;
-
         List<Cerpani> czCerpani = new List<Cerpani>();
         if (cerpanoCr != 0)
         {
             czCerpani.Add(new Cerpani()
             {
-                CastkaSpotrebovana = Convert.ToDecimal(Math.Round(cerpanoCr.Value, 2))
+                CastkaSpotrebovana = Math.Round(cerpanoCr, 2)
             });
         }
 
@@ -29,7 +24,7 @@ public static class Steps
         {
             euCerpani.Add(new Cerpani()
             {
-                CastkaSpotrebovana = Convert.ToDecimal(Math.Round(cerpanoEu.Value, 2))
+                CastkaSpotrebovana = Math.Round(cerpanoEu, 2)
             });
         }
 
@@ -38,7 +33,7 @@ public static class Steps
         {
             listRozhodnuti.Add(new Rozhodnuti()
             {
-                CastkaRozhodnuta = Convert.ToDecimal(Math.Round(rozhodnutoCr.Value, 2)),
+                CastkaRozhodnuta = Math.Round(rozhodnutoCr, 2),
                 Cerpani = czCerpani,
                 Poskytovatel = "CZ"
             });
@@ -48,7 +43,7 @@ public static class Steps
         {
             listRozhodnuti.Add(new Rozhodnuti()
             {
-                CastkaRozhodnuta = Convert.ToDecimal(Math.Round(rozhodnutoEu.Value, 2)),
+                CastkaRozhodnuta = Math.Round(rozhodnutoEu, 2),
                 Cerpani = euCerpani,
                 Poskytovatel = "EU"
             });

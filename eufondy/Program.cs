@@ -31,10 +31,11 @@ await using (var eufondyDb = new EufondyDbContext(eufondyCnnString))
 
 foreach (var dotaceRec in dotace2006)
 {
-    var rozhodnuti = Steps.CreateRozhodnuti(dotaceRec.SmlouvaNarodniVerejneProstredky,
-        dotaceRec.ProplacenoNarodniVerejneProstredky,
-        dotaceRec.SmlouvaEuPodil,
-        dotaceRec.ProplacenoEuPodil);
+    var rozhodnuti = Steps.CreateRozhodnuti(
+        DataHelper.ConvertDoubleToMoney(dotaceRec.SmlouvaNarodniVerejneProstredky),
+        DataHelper.ConvertDoubleToMoney(dotaceRec.ProplacenoNarodniVerejneProstredky),
+        DataHelper.ConvertDoubleToMoney(dotaceRec.SmlouvaEuPodil),
+        DataHelper.ConvertDoubleToMoney(dotaceRec.ProplacenoEuPodil));
 
     var dotace = new Dotace()
     {
@@ -70,12 +71,14 @@ await using (var eufondyDb = new EufondyDbContext(eufondyCnnString))
 foreach (var dotaceRec in dotace2013)
 {
     
-    var rozhodnutoCr = dotaceRec.RozhodnutiSmlouvaOPoskytnutiDotaceVerejneProstredkyCelke -
-                       dotaceRec.RozhodnutiSmlouvaOPoskytnutiDotaceEuZdroje;
-    var cerpanoCr = dotaceRec.ProplaceneProstredkyPrijemcumVyuctovaneVerejneProstredkyC -
-                    dotaceRec.ProplaceneProstredkyPrijemcumVyuctovaneEuZdroje;
-    var rozhodnutoEu = dotaceRec.RozhodnutiSmlouvaOPoskytnutiDotaceEuZdroje;
-    var cerpanoEu = dotaceRec.ProplaceneProstredkyPrijemcumVyuctovaneEuZdroje;
+    var rozhodnutoCr = 
+        DataHelper.ConvertDoubleToMoney(dotaceRec.RozhodnutiSmlouvaOPoskytnutiDotaceVerejneProstredkyCelke) -
+        DataHelper.ConvertDoubleToMoney(dotaceRec.RozhodnutiSmlouvaOPoskytnutiDotaceEuZdroje);
+    var cerpanoCr = 
+        DataHelper.ConvertDoubleToMoney(dotaceRec.ProplaceneProstredkyPrijemcumVyuctovaneVerejneProstredkyC) -
+        DataHelper.ConvertDoubleToMoney(dotaceRec.ProplaceneProstredkyPrijemcumVyuctovaneEuZdroje);
+    var rozhodnutoEu = DataHelper.ConvertDoubleToMoney(dotaceRec.RozhodnutiSmlouvaOPoskytnutiDotaceEuZdroje);
+    var cerpanoEu = DataHelper.ConvertDoubleToMoney(dotaceRec.ProplaceneProstredkyPrijemcumVyuctovaneEuZdroje);
 
     var rozhodnuti = Steps.CreateRozhodnuti(rozhodnutoCr, cerpanoCr, rozhodnutoEu, cerpanoEu);
 
@@ -135,7 +138,7 @@ foreach (var dotaceRec in dotace2020)
             Cerpani = new List<Cerpani>(),
             Poskytovatel = "ESIF",
             Rok = rokRozhodnuti, 
-            CastkaRozhodnuta = Convert.ToDecimal(Math.Round(dotaceRec.FinancovaniCzv ?? 0, 2))
+            CastkaRozhodnuta = DataHelper.ConvertDoubleToMoney(dotaceRec.FinancovaniCzv)
         }
     };
 
@@ -144,7 +147,7 @@ foreach (var dotaceRec in dotace2020)
     {
         Id = $"eufondy-{setprep20}{dotaceRec.KodProjektu}",
         IdDotace = $"{setprep20}{dotaceRec.KodProjektu}",
-        PrijemceIco = dotaceRec.ZadatelIco?.ToString("N0"),
+        PrijemceIco = dotaceRec.ZadatelIco?.ToString("F0"),
         PrijemceObchodniJmeno = dotaceRec.ZadatelNazev,
         PrijemceObec = dotaceRec.ZadatelObec,
         PrijemcePSC = dotaceRec.ZadatelPsc,

@@ -16,6 +16,13 @@ public static class DataHelper
         }
 
         return null;
-
+    }
+    
+    public static decimal ConvertDoubleToMoney(double? value)
+    {
+        if (value == null)
+            return 0;
+        
+        return Convert.ToDecimal(Math.Round(value.Value, 2));
     }
 }

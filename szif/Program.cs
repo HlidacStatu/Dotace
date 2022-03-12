@@ -76,7 +76,7 @@ foreach (var dotaceRec in szif)
         NazevProjektu = dotaceRec.Opatreni,
         ProgramNazev = dotaceRec.Opatreni,
         PrijemceObchodniJmeno = dotaceRec.Jmeno,
-        PrijemceIco = dotaceRec.Ico?.ToString("N0"),
+        PrijemceIco = dotaceRec.Ico?.ToString("F0"),
         PrijemceObec = dotaceRec.Obec,
         PrijemceOkres = dotaceRec.Okres,
         
