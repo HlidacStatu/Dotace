@@ -13,7 +13,7 @@ DATA_DIR = 'data/'
 logging.getLogger().setLevel(logging.INFO)
 
 # DB CONNECTION SETTING
-database = 'import'
+database = 'dotace'
 dbschema = 'szif'
 postgre_cnn = os.environ.get('POSTGRES_CONNECTION')
 #os.chdir("szif")

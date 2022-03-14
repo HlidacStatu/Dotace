@@ -28,7 +28,7 @@ public static class DataHelper
 
     public static string GetDbConnectionString()
     {
-        string envVariable = "POSTGRES_CONNECTION";
+        string envVariable = "POSTGRES_CONNECTION_DOTNET";
         var cnnString = Environment.GetEnvironmentVariable(envVariable);
         if (cnnString == null)
         {

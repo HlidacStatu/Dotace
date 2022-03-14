@@ -13,7 +13,7 @@ logging.info(f"Zpracovávám czechinvest")
 DATA_DIR = 'data/'
 file = "Udelene-investicni-pobidky.xls"
 # DB CONNECTION SETTING
-database = 'import'
+database = 'dotace'
 dbschema = 'czechinvest'
 postgre_cnn = os.environ.get('POSTGRES_CONNECTION')
 

@@ -76,7 +76,7 @@ df.set_index(df.columns[0], inplace=True)
 
 # připojení k postgres
 dbschema = 'dotinfo'
-database = '/import'
+database = '/dotace'
 
 engine = create_engine(postgre_cnn + database)
 if not engine.dialect.has_schema(engine, dbschema):

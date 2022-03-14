@@ -69,7 +69,7 @@ df20.rename(columns={'kod': 'kod_projektu'}, inplace=True)
 
 # db import
 dbschema = 'eufondy'
-database = '/import'
+database = '/dotace'
 engine = create_engine(postgre_cnn + database)
 if not engine.dialect.has_schema(engine, dbschema):
     engine.execute(schema.CreateSchema(dbschema))
