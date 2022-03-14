@@ -24,7 +24,7 @@ namespace DeMinimis
         /// <exception cref="ArgumentException"></exception>
         public static async Task Main(string hlidacToken,
             int maxConcurrency = 10,
-            string dumpUrl = "https://www.hlidacstatu.cz/api/v1/dump?datatype=dataset.de-minimis")
+            string dumpUrl = "https://www.hlidacstatu.cz/api/v2/dump/dataset.de-minimis")
         {
        
             if (string.IsNullOrWhiteSpace(hlidacToken))
