@@ -1,3 +1,4 @@
+using DbUp;
 using Microsoft.EntityFrameworkCore;
 
 namespace Common.IntermediateDb;
