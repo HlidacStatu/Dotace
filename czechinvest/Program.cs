@@ -43,7 +43,9 @@ foreach (var dotaceRec in szif)
     {
         Id = $"czechinvest-{dotaceRec.Id?.ToString()}",
         IdDotace = dotaceRec.Id?.ToString(),
-        DatumPodpisu = dotaceRec.RokPodani is null ? null : new DateTime((int)dotaceRec.RokPodani, 1, 1), 
+        DatumPodpisu = dotaceRec.RokPodani is null
+            ? null
+            : new DateTime((int)dotaceRec.RokPodani, 1, 1, 0, 0, 0, DateTimeKind.Utc), 
         ProgramNazev = dotaceRec.Program,
         NazevProjektu = dotaceRec.Projekt,
         PrijemceObchodniJmeno = dotaceRec.Prijemce,
