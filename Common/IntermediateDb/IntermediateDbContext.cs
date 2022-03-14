@@ -1,3 +1,4 @@
+using System.Reflection;
 using DbUp;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,11 +30,14 @@ public class IntermediateDbContext : DbContext
 
     public static async Task EnsureDbIsCreated(string cnnString)
     {
-        await using (var intermediateDbContext = new IntermediateDbContext(cnnString))
-        {
-            await intermediateDbContext.Database.MigrateAsync();
-        }
-
+        
+        var upgrader =
+            DeployChanges.To
+                .PostgresqlDatabase(cnnString)
+                .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
+                .LogToConsole()
+                .Build();
+        
     }
 
 }
