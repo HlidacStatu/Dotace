@@ -5,12 +5,26 @@ namespace Common.IntermediateDb
 {
     public class Dotace
     {
+        private DateTime? _datumPodpisu;
+        private DateTime? _datumAktualizace;
+
         [Key]
         public string Id { get; set; }
         
         public string IdDotace { get; set; }
-        public DateTime? DatumPodpisu { get; set; }
-        public DateTime? DatumAktualizace { get; set; }
+
+        public DateTime? DatumPodpisu
+        {
+            get => _datumPodpisu;
+            set => _datumPodpisu = value.HasValue? DateTime.SpecifyKind(value.Value, DateTimeKind.Utc) : null;
+        }
+
+        public DateTime? DatumAktualizace
+        {
+            get => _datumAktualizace;
+            set => _datumAktualizace = value.HasValue? DateTime.SpecifyKind(value.Value, DateTimeKind.Utc) : null;
+        }
+
         public string? KodProjektu { get; set; }
         public string? NazevProjektu { get; set; }
         public string? Duplicita { get; set; }
