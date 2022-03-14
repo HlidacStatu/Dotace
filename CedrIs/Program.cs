@@ -51,7 +51,7 @@ foreach (var rec in csvObec)
 }
 csvOkres = null;
 
-var csvAdresaSidlo = await CsvHelpers.LoadCsvAsDictionary<CsvAdresa>(folder, d => d.IdPrijemce, "adresasidlo.csv.gz");
+var csvAdresaSidlo = await CsvHelpers.LoadCsvAsDictionary<CsvAdresa>(folder, d => d.IdPrijemce, "AdresaSidlo.csv.gz");
 foreach (var rec in csvAdresaSidlo)
 {
     var val = rec.Value;
@@ -64,7 +64,7 @@ foreach (var rec in csvAdresaSidlo)
     val.Okres = obecRec.Okres; 
 }
 
-var csvAdresaBydliste = await CsvHelpers.LoadCsvAsDictionary<CsvAdresa>(folder, d => d.IdPrijemce, "adresabydliste.csv.gz");
+var csvAdresaBydliste = await CsvHelpers.LoadCsvAsDictionary<CsvAdresa>(folder, d => d.IdPrijemce, "AdresaBydliste.csv.gz");
 foreach (var rec in csvAdresaBydliste)
 {
     var val = rec.Value;
