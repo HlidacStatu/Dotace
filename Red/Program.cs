@@ -5,7 +5,6 @@ using Common;
 using Common.IntermediateDb;
 using Red;
 using Red.Model;
-using System.Text.Json;
 
 var appLogger = Logging.CreateLogger("application.log");
 
@@ -13,21 +12,17 @@ appLogger.Debug("Start RED!");
 
 appLogger.Debug("Loading configuration...");
 
-var configFile = File.OpenRead("appsettings.json");
-var config = await JsonSerializer.DeserializeAsync<Dictionary<string, string>>(configFile);
-if (config == null || config.Count == 0) throw new ArgumentNullException(nameof(config));
-var dbIntermediateCnnString = config["dbintermediate"];
+string cnnString = DataHelper.GetDbConnectionString();
 
+appLogger.Debug("Prepare dbs");
 
-// appLogger.Debug("Prepare dbs");
-//
-// //intermediate db
-// await using (var db = new IntermediateDbContext(dbIntermediateCnnString))
-// {
-//     await db.Database.EnsureDeletedAsync();
-//     await db.Database.EnsureCreatedAsync();
-// }
-// appLogger.Debug("Db was created");
+//intermediate db
+await using (var db = new IntermediateDbContext(cnnString))
+{
+    await db.Database.EnsureCreatedAsync();
+}
+
+appLogger.Debug("Db was created");
 
 var httpClient = new HttpClient();
 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -154,5 +149,5 @@ foreach (var dotaceRec in csvDotace)
 
 appLogger.Debug("Uploading dotace to db");
 
-await DotaceRepo.SaveDotaceToDb(dotaceResults, appLogger, dbIntermediateCnnString);
+await DotaceRepo.SaveDotaceToDb(dotaceResults, appLogger, cnnString);
 appLogger.Debug("Finished");

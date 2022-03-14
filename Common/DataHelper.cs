@@ -25,4 +25,16 @@ public static class DataHelper
         
         return Convert.ToDecimal(Math.Round(value.Value, 2));
     }
+
+    public static string GetDbConnectionString()
+    {
+        string envVariable = "POSTGRES_CONNECTION";
+        var cnnString = Environment.GetEnvironmentVariable(envVariable);
+        if (cnnString == null)
+        {
+            throw new Exception($"Nenalezena {envVariable} environment proměnná");
+        }
+
+        return cnnString;
+    }
 }

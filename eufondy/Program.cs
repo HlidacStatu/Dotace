@@ -10,19 +10,22 @@ var appLogger = Logging.CreateLogger("application.log");
 appLogger.Debug("Start Eufondy!");
 appLogger.Debug("Loading configuration...");
 
-var configFile = File.OpenRead("appsettings.json");
-var config = await JsonSerializer.DeserializeAsync<Dictionary<string, string>>(configFile);
-if (config == null || config.Count == 0) throw new ArgumentNullException(nameof(config));
-var dbIntermediateCnnString = config["dbintermediate"];
-var eufondyCnnString = config["dbeufondy"];
+string cnnString = DataHelper.GetDbConnectionString();
 
+appLogger.Debug("Prepare dbs");
+
+//intermediate db
+await using (var intermediateDbContext = new IntermediateDbContext(cnnString))
+{
+    await intermediateDbContext.Database.EnsureCreatedAsync();
+}
 
 var dotaceResults = new List<Dotace>();
 
 appLogger.Debug("Adding 2006 set");
 string setprep06 = "04-06-";
 List<Dotace2006>? dotace2006;
-await using (var eufondyDb = new EufondyDbContext(eufondyCnnString))
+await using (var eufondyDb = new EufondyDbContext(cnnString))
 {
     dotace2006 = await eufondyDb.Dotace06
         .FromSqlRaw(@"select distinct on (kod_projektu) * from eufondy.dotace2006") // je potřeba filtrovat duplicity
@@ -62,7 +65,7 @@ dotace2006 = null;
 appLogger.Debug("Adding 2013 set");
 string setprep13 = "07-13-";
 List<Dotace2013>? dotace2013;
-await using (var eufondyDb = new EufondyDbContext(eufondyCnnString))
+await using (var eufondyDb = new EufondyDbContext(cnnString))
 {
     dotace2013 = await eufondyDb.Dotace13
         .ToListAsync();
@@ -117,7 +120,7 @@ dotace2013 = null;
 appLogger.Debug("Adding 2020 set");
 string setprep20 = "14-20-";
 List<Dotace2020>? dotace2020;
-await using (var eufondyDb = new EufondyDbContext(eufondyCnnString))
+await using (var eufondyDb = new EufondyDbContext(cnnString))
 {
     dotace2020 = await eufondyDb.Dotace20
         .ToListAsync();
@@ -165,5 +168,5 @@ dotace2020 = null;
 
 appLogger.Debug("Uploading dotace to db");
 
-await DotaceRepo.SaveDotaceToDb(dotaceResults, appLogger, dbIntermediateCnnString);
+await DotaceRepo.SaveDotaceToDb(dotaceResults, appLogger, cnnString);
 appLogger.Debug("Finished");

@@ -7,19 +7,24 @@ using Microsoft.EntityFrameworkCore;
 
 var appLogger = Logging.CreateLogger("application.log");
 
-appLogger.Debug("Start Eufondy!");
+appLogger.Debug("Start Dotinfo!");
 appLogger.Debug("Loading configuration...");
 
-var configFile = File.OpenRead("appsettings.json");
-var config = await JsonSerializer.DeserializeAsync<Dictionary<string, string>>(configFile);
-if (config == null || config.Count == 0) throw new ArgumentNullException(nameof(config));
-var dbIntermediateCnnString = config["dbintermediate"];
-var dotInfoCnnString = config["dbdotinfo"];
+string cnnString = DataHelper.GetDbConnectionString();
+
+appLogger.Debug("Prepare dbs");
+
+//intermediate db
+await using (var intermediateDbContext = new IntermediateDbContext(cnnString))
+{
+    await intermediateDbContext.Database.EnsureCreatedAsync();
+}
+
 
 
 var dotaceResults = new List<Dotace>();
 
-await using var db = new DotInfoDbContext(dotInfoCnnString);
+await using var db = new DotInfoDbContext(cnnString);
 var dotinfo = await db.DotInfo.ToListAsync();
 
 foreach (var dotaceRec in dotinfo)
@@ -72,5 +77,5 @@ foreach (var dotaceRec in dotinfo)
 
 appLogger.Debug("Uploading dotace to db");
 
-await DotaceRepo.SaveDotaceToDb(dotaceResults, appLogger, dbIntermediateCnnString);
+await DotaceRepo.SaveDotaceToDb(dotaceResults, appLogger, cnnString);
 appLogger.Debug("Finished");

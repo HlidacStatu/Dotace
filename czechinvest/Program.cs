@@ -9,14 +9,18 @@ var appLogger = Logging.CreateLogger("application.log");
 appLogger.Debug("Start Eufondy!");
 appLogger.Debug("Loading configuration...");
 
-var configFile = File.OpenRead("appsettings.json");
-var config = await JsonSerializer.DeserializeAsync<Dictionary<string, string>>(configFile);
-if (config == null || config.Count == 0) throw new ArgumentNullException(nameof(config));
-var dbIntermediateCnnString = config["dbintermediate"];
-var dotInfoCnnString = config["dbdotinfo"];
+string cnnString = DataHelper.GetDbConnectionString();
+
+appLogger.Debug("Prepare dbs");
+
+//intermediate db
+await using (var intermediateDbContext = new IntermediateDbContext(cnnString))
+{
+    await intermediateDbContext.Database.EnsureCreatedAsync();
+}
 
 var dotaceResults = new List<Dotace>();
-await using var db = new CzechInvestDbContext(dotInfoCnnString);
+await using var db = new CzechInvestDbContext(cnnString);
 var szif = await db.CzechInvest
     .Where(d => d.Zruseno == null)
     .ToListAsync();
@@ -54,5 +58,5 @@ foreach (var dotaceRec in szif)
 
 appLogger.Debug("Uploading dotace to db");
 
-await DotaceRepo.SaveDotaceToDb(dotaceResults, appLogger, dbIntermediateCnnString);
+await DotaceRepo.SaveDotaceToDb(dotaceResults, appLogger, cnnString);
 appLogger.Debug("Finished");

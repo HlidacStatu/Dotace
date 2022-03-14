@@ -7,4 +7,4 @@ fi
 
 
 dotnet publish -o bin/app
-dotnet bin/app/DeMinimis.dll --max-concurrency 15 --hlidac-token ${deminimis_hlidacapikey}
+dotnet bin/app/Szif.dll

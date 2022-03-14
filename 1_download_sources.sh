@@ -1,23 +1,22 @@
 #!/bin/sh
 
 cd "$(dirname $0)"
+cd Loaders
 
-cd Czechinvest
+cd czechinvest
 python3 LoadCzinvest.py
 cd ..
 
-cd Dotinfo
+cd dotinfo
 python3 LoadDotinfo.py
 cd ..
 
-cd Eufondy
+cd eufondy
 python3 LoadEufondy.py
 cd ..
 
-cd Szif
+cd szif
 python3 LoadSzif.py
 cd ..
 
-cd DeMinimis
-./run.sh
 cd ..

@@ -9,19 +9,15 @@ var appLogger = Common.Logging.CreateLogger("application.log");
 appLogger.Debug("Start RED!");
 appLogger.Debug("Loading configuration...");
 
-var configFile = File.OpenRead("appsettings.json");
-var config = await JsonSerializer.DeserializeAsync<Dictionary<string, string>>(configFile);
-if (config == null || config.Count == 0) throw new ArgumentNullException(nameof(config));
-var dbIntermediateCnnString = config["dbintermediate"];
+string cnnString = DataHelper.GetDbConnectionString();
 
-// jak to udělat s databází?
-// appLogger.Debug("Prepare db");
-// //intermediate db
-// await using (var db = new IntermediateDbContext(dbIntermediateCnnString))
-// {
-//     await db.Database.EnsureDeletedAsync();
-//     await db.Database.EnsureCreatedAsync();
-// }
+appLogger.Debug("Prepare dbs");
+
+//intermediate db
+await using (var intermediateDbContext = new IntermediateDbContext(cnnString))
+{
+    await intermediateDbContext.Database.EnsureCreatedAsync();
+}
 
 appLogger.Debug("Db was created");
 
@@ -250,5 +246,5 @@ foreach (var dotaceRec in csvDotace)
 
 appLogger.Debug("Uploading dotace to db");
 
-await DotaceRepo.SaveDotaceToDb(dotaceResults, appLogger, dbIntermediateCnnString);
+await DotaceRepo.SaveDotaceToDb(dotaceResults, appLogger, cnnString);
 appLogger.Debug("Finished");
