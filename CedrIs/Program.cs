@@ -4,6 +4,7 @@ using CedrIs;
 using CedrIs.Model;
 using Common;
 using Common.IntermediateDb;
+using Microsoft.EntityFrameworkCore;
 
 var appLogger = Common.Logging.CreateLogger("application.log");
 appLogger.Debug("Start RED!");
@@ -14,10 +15,8 @@ string cnnString = DataHelper.GetDbConnectionString();
 appLogger.Debug("Prepare dbs");
 
 //intermediate db
-await using (var intermediateDbContext = new IntermediateDbContext(cnnString))
-{
-    await intermediateDbContext.Database.EnsureCreatedAsync();
-}
+await IntermediateDbContext.EnsureDbIsCreated(cnnString);
+
 
 appLogger.Debug("Db was created");
 

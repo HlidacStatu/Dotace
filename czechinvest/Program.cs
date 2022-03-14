@@ -14,10 +14,7 @@ string cnnString = DataHelper.GetDbConnectionString();
 appLogger.Debug("Prepare dbs");
 
 //intermediate db
-await using (var intermediateDbContext = new IntermediateDbContext(cnnString))
-{
-    await intermediateDbContext.Database.MigrateAsync();
-}
+await IntermediateDbContext.EnsureDbIsCreated(cnnString);
 
 var dotaceResults = new List<Dotace>();
 await using var db = new CzechInvestDbContext(cnnString);

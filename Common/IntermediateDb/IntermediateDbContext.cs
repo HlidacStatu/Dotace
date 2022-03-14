@@ -27,4 +27,13 @@ public class IntermediateDbContext : DbContext
         modelBuilder.HasDefaultSchema("exportready");
     }
 
+    public static async Task EnsureDbIsCreated(string cnnString)
+    {
+        await using (var intermediateDbContext = new IntermediateDbContext(cnnString))
+        {
+            await intermediateDbContext.Database.MigrateAsync();
+        }
+
+    }
+
 }

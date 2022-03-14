@@ -17,10 +17,7 @@ string cnnString = DataHelper.GetDbConnectionString();
 appLogger.Debug("Prepare dbs");
 
 //intermediate db
-await using (var db = new IntermediateDbContext(cnnString))
-{
-    await db.Database.EnsureCreatedAsync();
-}
+await IntermediateDbContext.EnsureDbIsCreated(cnnString);
 
 appLogger.Debug("Db was created");
 

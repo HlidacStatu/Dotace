@@ -41,10 +41,7 @@ namespace DeMinimis
             appLogger.Debug("Prepare dbs");
 
             //intermediate db
-            await using (var intermediateDbContext = new IntermediateDbContext(cnnString))
-            {
-                await intermediateDbContext.Database.EnsureCreatedAsync();
-            }
+            await IntermediateDbContext.EnsureDbIsCreated(cnnString);
 
             appLogger.Debug($"api key=[{hlidacToken}]");
             appLogger.Debug("Starting");
