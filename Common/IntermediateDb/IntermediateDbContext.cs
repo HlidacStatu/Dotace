@@ -38,6 +38,8 @@ public class IntermediateDbContext : DbContext
                 .LogToConsole()
                 .Build();
         
+        var result = upgrader.PerformUpgrade();
+        
     }
 
 }
