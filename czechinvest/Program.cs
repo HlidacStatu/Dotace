@@ -16,7 +16,7 @@ appLogger.Debug("Prepare dbs");
 //intermediate db
 await using (var intermediateDbContext = new IntermediateDbContext(cnnString))
 {
-    await intermediateDbContext.Database.EnsureCreatedAsync();
+    await intermediateDbContext.Database.MigrateAsync();
 }
 
 var dotaceResults = new List<Dotace>();
