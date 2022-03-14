@@ -110,7 +110,7 @@ var csvCisPoskytovatel =
 var csvCisFinZdroj = await CsvHelpers.LoadCsvAsDictionary<CsvCiselnikfinancnizdroj>(folder, d => d.Id, "ciselnikFinancniZdrojv01.csv.gz");
 var csvRozpoctoveObdobi = await CsvHelpers.LoadCsvAsDictionaryList<CsvRozpoctoveobdobi>(folder, d => d.IdRozhodnuti, "RozpoctoveObdobi.csv.gz");
 
-var csvDotace = await CsvHelpers.LoadCsvAsDictionary<CsvDotace>(folder, d => d.IdDotace); // mohlo by byt enumeraci
+var csvDotace = await CsvHelpers.LoadCsvAsDictionary<CsvDotace>(folder, d => d.IdDotace, "Dotace.csv.gz"); // mohlo by byt enumeraci
 
 
 appLogger.Debug("Merging data");
